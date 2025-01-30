@@ -7,16 +7,13 @@ const formChildId = (parentId: any, childId: any) => `${parentId}-node${childId}
 
 function sortFunction<K extends Record<string, string>>(
     sort: Record<K[keyof K], number> | undefined
-): ((a: keyof K, b: keyof K) => number) | ((a: string, b: string) => number) {
-    if (sort === undefined) {
-        return function (a: string, b: string) {
-            return a.localeCompare(b);
-        };
-    } else {
-        return (a: keyof K, b: keyof K) => {
-            return sort[a as K[keyof K]] - sort[b as K[keyof K]];
-        };
+): ((a: keyof K, b: keyof K) => number) | undefined {
+    if (!sort) {
+        return undefined;
     }
+    return (a: keyof K, b: keyof K) => {
+        return sort[a as K[keyof K]] - sort[b as K[keyof K]];
+    };
 }
 
 type ParentFilterOptions = {
