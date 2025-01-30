@@ -28,7 +28,7 @@ interface ParentChildFilterProps<P extends ParentType, C extends ChildType, Pare
     childSort: ((a: C[ChildKey], b: C[ChildKey]) => number) | undefined;
     size: CheckboxSizes;
     checkedItems: Set<string>;
-    onCheckedChange: (parentValue: ParentKey, childValue: ChildKey | undefined, value: string, isChecked: boolean) => void;
+    onCheckedChange: (parentKey: ParentKey, childKey: ChildKey | undefined, value: string, isChecked: boolean) => void;
     formChildId: (parentId: string, child: string) => string;
 }
 
