@@ -23,7 +23,7 @@ interface ParentChildFilterProps<P extends ParentType, C extends ChildType, Pare
     parentValue: MappingKey<P>;
     pid: string;
     childItems: MappingKey<C>[] | undefined;
-    overrides?: Partial<Record<ParentKey | ChildKey, string>>;
+    overrides?: Partial<Record<P[ParentKey] | C[ChildKey], string>>;
     childReverseLookup: (value: MappingKey<C>) => keyof C;
     childSort: ((a: ChildKey, b: ChildKey) => number) | ((a: string, b: string) => number);
     size: CheckboxSizes;
