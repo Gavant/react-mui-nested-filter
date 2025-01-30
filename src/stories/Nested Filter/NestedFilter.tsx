@@ -144,7 +144,7 @@ function NestedFilter<I extends ParentType, C extends ChildType, M extends Mappi
                             parentKey={reverseLookup(parentValue, itemReverseLookup)}
                             parentValue={parentValue}
                             pid={formParentId(parentValue)}
-                            childItems={mapping[parentValue]} //BIRD: [“CANARY”, “PARAKEET”, …]
+                            childItems={mapping[parentValue]}
                             childReverseLookup={(value: Value<C>) => reverseLookup(value, childItemReverseLookup)}
                             childSort={sortChild.current}
                             overrides={overrides}

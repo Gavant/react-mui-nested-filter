@@ -4,20 +4,6 @@ import { CheckboxSizes } from './Filters.tsx';
 import { useMemo } from 'react';
 import { ChildType, MappingKey, ParentType } from './NestedFilter.tsx';
 
-// interface ParentChildFilterProps<ParentKey extends string, ChildKey extends string> {
-//     parentKey: ParentKey;
-//     parentValue: string;
-//     pid: string;
-//     childItems: ChildKey[] | undefined;
-//     overrides?: Partial<Record<ParentKey | ChildKey, string>>;
-//     childReverseLookup: (value: ChildKey) => string;
-//     childSort: (a: ChildKey, b: ChildKey) => number;
-//     size: CheckboxSizes;
-//     checkedItems: Set<string>;
-//     onCheckedChange: (parentValue: ParentKey, childValue: ChildKey | undefined, value: string, isChecked: boolean) => void;
-//     formChildId: (parentId: string, child: string) => string;
-// }
-
 interface ParentChildFilterProps<P extends ParentType, C extends ChildType, ParentKey extends keyof P, ChildKey extends keyof C> {
     parentKey: keyof P;
     parentValue: MappingKey<P>;
