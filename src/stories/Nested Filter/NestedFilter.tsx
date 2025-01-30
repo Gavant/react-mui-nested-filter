@@ -5,51 +5,50 @@ import ParentChildFilter from './ParentChildFilter.tsx';
 const formParentId = (identifier: any) => `parent${identifier}`;
 const formChildId = (parentId: any, childId: any) => `${parentId}-node${childId}`;
 
-function sortFunction<K extends Record<string, string>>(sort: Record<K[keyof K], number> | undefined) {
-    if (sort === undefined) {
-        return function (a: string, b: string) {
-            return a.localeCompare(b);
-        };
-    } else {
-        return (a: string, b: string) => {
-            return sort[a as K[keyof K]] - sort[b as K[keyof K]];
-        };
+function sortFunction<K extends Record<string, string>>(
+    sort: Record<K[keyof K], number> | undefined
+): ((a: keyof K, b: keyof K) => number) | undefined {
+    if (!sort) {
+        return undefined;
     }
+    return (a: keyof K, b: keyof K) => {
+        return sort[a as K[keyof K]] - sort[b as K[keyof K]];
+    };
 }
 
 type ParentFilterOptions = {
     replaceChildrenWithParentOnAllChecked?: boolean;
 };
+export interface ParentType extends Record<string, string> {}
+export interface ChildType extends Record<string, string> {}
 
-interface ParentFilterProps<
-    I extends Record<string, string>,
-    C extends Record<string, string>,
-    M extends Partial<Record<I[keyof I], Array<C[keyof C]>>>,
-> {
+type Value<V> = V[keyof V];
+
+export type MappingKey<I> = Value<I>;
+type MappingValue<C> = Array<C[keyof C]>;
+type MappingType<I extends ParentType, C extends ChildType> = Partial<Record<MappingKey<I>, MappingValue<C>>>;
+interface ParentFilterProps<I extends ParentType, C extends ChildType, M extends MappingType<I, C>> {
     items: I;
     childItems: C;
     mapping: M;
     size: CheckboxSizes;
     expandedItems: Set<string>;
     // Sort the parent by value
-    parentSort?: Record<I[keyof I], number>;
+    parentSort?: Record<Value<I>, number>;
     // Sort the child by value
-    childSort?: Record<I[keyof I], number>;
+    childSort?: Record<Value<I>, number>;
     // Display string overrides for a given value - both parent and child
-    overrides?: Partial<Record<I[keyof I] | C[keyof C], string>>;
+    overrides?: Partial<Record<Value<I> | Value<C>, string>>;
     onChecked: (update: Set<string>) => void;
     checked: Set<string>;
     options?: ParentFilterOptions;
 }
 
-interface ParentType extends Record<string, string> {}
-interface ChildType extends Record<string, string> {}
+type Entries<T> = {
+    [K in keyof T]: [K, T[K]];
+}[keyof T][];
 
-type MappingKey<I> = I[keyof I];
-type MappingValue<C> = Array<C[keyof C]>;
-type MappingType<I extends ParentType, C extends ChildType> = Partial<Record<MappingKey<I>, MappingValue<C>>>;
-
-function NestedFilter<I extends Record<string, string>, C extends Record<string, string>, M extends MappingType<I, C>>({
+function NestedFilter<I extends ParentType, C extends ChildType, M extends MappingType<I, C>>({
     items,
     childItems,
     mapping,
@@ -65,28 +64,28 @@ function NestedFilter<I extends Record<string, string>, C extends Record<string,
     const sortChild = useRef(sortFunction(childSort));
 
     const itemReverseLookup = useMemo(() => {
-        const map = new Map<string, keyof I>();
-        Object.entries(items).forEach(([key, value]) => {
-            map.set(value, key as keyof I);
+        const map = new Map<Value<I>, keyof I>();
+        (Object.entries(items) as Entries<I>).forEach(([key, value]) => {
+            map.set(value, key);
         });
         return map;
     }, [items]);
 
     const childItemReverseLookup = useMemo(() => {
-        const map = new Map<string, keyof C>();
-        Object.entries(childItems).forEach(([key, value]) => {
-            map.set(value, key as keyof C);
+        const map = new Map<Value<C>, keyof C>();
+        (Object.entries(childItems) as Entries<C>).forEach(([key, value]) => {
+            map.set(value, key);
         });
         return map;
     }, [childItems]);
 
-    const reverseLookup = function <V extends Record<string, unknown>>(value: string, map: Map<string, keyof V>): MappingKey<V> & string {
+    const reverseLookup = function <V extends I | C>(value: Value<V>, map: Map<Value<V>, keyof V>): keyof V {
         // Ensure the return type is a string
         const key = map.get(value);
         if (!key) {
             throw new Error(`Key not found in map for value: ${value}`);
         }
-        return key as MappingKey<V> & string;
+        return key;
     };
 
     const onCheckedChange = (parentKey: keyof I, childKey: keyof C | undefined, value: string, isChecked: boolean) => {
@@ -138,15 +137,15 @@ function NestedFilter<I extends Record<string, string>, C extends Record<string,
             {Object.keys(mapping)
                 .sort(sortParent.current)
                 .map((key) => {
-                    const parentValue = key as I[keyof I];
+                    const parentValue = key as MappingKey<I>;
 
                     return (
-                        <ParentChildFilter
+                        <ParentChildFilter<I, C>
                             parentKey={reverseLookup(parentValue, itemReverseLookup)}
                             parentValue={parentValue}
                             pid={formParentId(parentValue)}
                             childItems={mapping[parentValue]}
-                            childReverseLookup={(value: C[keyof C]) => reverseLookup(value, childItemReverseLookup)}
+                            childReverseLookup={(value: Value<C>) => reverseLookup(value, childItemReverseLookup)}
                             childSort={sortChild.current}
                             overrides={overrides}
                             size={size}
