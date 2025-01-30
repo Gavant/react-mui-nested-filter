@@ -24,8 +24,8 @@ interface ParentChildFilterProps<P extends ParentType, C extends ChildType, Pare
     pid: string;
     childItems: MappingKey<C>[] | undefined;
     overrides?: Partial<Record<ParentKey | ChildKey, string>>;
-    childReverseLookup: (value: MappingKey<C>) => string;
-    childSort: (a: ChildKey, b: ChildKey) => number;
+    childReverseLookup: (value: MappingKey<C>) => keyof C;
+    childSort: ((a: ChildKey, b: ChildKey) => number) | ((a: string, b: string) => number);
     size: CheckboxSizes;
     checkedItems: Set<string>;
     onCheckedChange: (parentValue: ParentKey, childValue: ChildKey | undefined, value: string, isChecked: boolean) => void;
@@ -57,17 +57,17 @@ function ParentChildFilter<P extends ParentType, C extends ChildType>({
             isChecked={checkedItems.has(parentValue)}
             indeterminate={hasAnyItemsChecked}
             onChecked={(isChecked: boolean) => onCheckedChange(parentKey, undefined, parentValue, isChecked)}
-            title={(overrides?.[parentValue as keyof P] ?? enumToReadable(parentValue as string)) as string}
+            title={overrides?.[parentValue as keyof P] ?? enumToReadable(parentValue as string)}
         >
-            {(childItems || []).sort(childSort).map((child: keyof C) => {
+            {(childItems || []).sort(childSort).map((child: C[keyof C]) => {
                 const childKey = childReverseLookup(child);
                 return (
                     <FilterItem
                         size={size}
                         isChecked={checkedItems.has(child) || checkedItems.has(parentValue)}
                         onChecked={(isChecked: boolean) => onCheckedChange(parentKey, childKey, child, isChecked)}
-                        title={(overrides?.[childKey] ?? enumToReadable(childKey)) as string}
-                        itemId={formChildId(pid, childKey)}
+                        title={overrides?.[childKey] ?? enumToReadable(childKey as string)}
+                        itemId={formChildId(pid, childKey as string)}
                     />
                 );
             })}
