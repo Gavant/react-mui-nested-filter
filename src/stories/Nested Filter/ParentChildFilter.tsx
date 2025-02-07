@@ -1,8 +1,8 @@
 import FilterItem from './FilterItem.tsx';
 import enumToReadable from '../../util/enumToReadable.ts';
-import { CheckboxSizes } from './Filters.tsx';
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { ChildType, MappingKey, ParentType } from './NestedFilter.tsx';
+import { FilterOptions, useFilterContext } from './Filter.context.tsx';
 
 interface ParentChildFilterProps<P extends ParentType, C extends ChildType, ParentKey extends keyof P, ChildKey extends keyof C> {
     parentKey: keyof P;
@@ -12,10 +12,11 @@ interface ParentChildFilterProps<P extends ParentType, C extends ChildType, Pare
     overrides?: Partial<Record<P[ParentKey] | C[ChildKey], string>>;
     childReverseLookup: (value: MappingKey<C>) => keyof C;
     childSort: ((a: C[ChildKey], b: C[ChildKey]) => number) | undefined;
-    size: CheckboxSizes;
-    checkedItems: Set<string>;
     onCheckedChange: (parentKey: ParentKey, childKey: ChildKey | undefined, value: string, isChecked: boolean) => void;
     formChildId: (parentId: string, child: string) => string;
+    options: FilterOptions;
+    buckets?: { parent: string; child: string };
+    checkedItems: Record<string, Set<string>>;
 }
 
 function ParentChildFilter<P extends ParentType, C extends ChildType>({
@@ -26,22 +27,37 @@ function ParentChildFilter<P extends ParentType, C extends ChildType>({
     overrides,
     childReverseLookup,
     childSort,
-    size,
-    checkedItems,
     onCheckedChange,
+    checkedItems,
     formChildId,
+    options = { replaceChildrenWithParentOnAllChecked: true, combineChildrenAndParentItems: false },
 }: ParentChildFilterProps<P, C, keyof P, keyof C>) {
+    const { checkboxSize, defaultBuckets } = useFilterContext();
+    const { combineChildrenAndParentItems, filterSortNameOverrides } = options;
+    const childSet = useRef<Set<string>>(new Set(childItems));
+
+    const bucketKey = (parentChild: 'parent' | 'child') => {
+        if (filterSortNameOverrides) {
+            return combineChildrenAndParentItems
+                ? (filterSortNameOverrides?.default ?? defaultBuckets.default)
+                : (filterSortNameOverrides[parentChild] ?? defaultBuckets[parentChild]);
+        } else {
+            return combineChildrenAndParentItems ? defaultBuckets.default : defaultBuckets[parentChild]!;
+        }
+    };
+
     const hasAnyItemsChecked = useMemo(() => {
-        return (childItems ?? []).some((item) => checkedItems.has(item));
+        return (childItems ?? []).some((item) => checkedItems[bucketKey('child')].has(item));
     }, [childItems, checkedItems]);
 
+    const allChildrenChecked = () => childSet.current?.isSubsetOf(checkedItems[bucketKey('child')]);
     return (
         <FilterItem
             id={pid}
             itemId={pid}
-            size={size}
-            isChecked={checkedItems.has(parentValue)}
-            indeterminate={hasAnyItemsChecked}
+            size={checkboxSize}
+            isChecked={checkedItems[bucketKey('parent')]?.has(parentValue) || allChildrenChecked()}
+            indeterminate={hasAnyItemsChecked && !allChildrenChecked()}
             onChecked={(isChecked: boolean) => onCheckedChange(parentKey, undefined, parentValue, isChecked)}
             title={overrides?.[parentValue as keyof P] ?? enumToReadable(parentValue as string)}
         >
@@ -49,8 +65,9 @@ function ParentChildFilter<P extends ParentType, C extends ChildType>({
                 const childKey = childReverseLookup(child);
                 return (
                     <FilterItem
-                        size={size}
-                        isChecked={checkedItems.has(child) || checkedItems.has(parentValue)}
+                        key={child}
+                        size={checkboxSize}
+                        isChecked={checkedItems[bucketKey('child')].has(child) || checkedItems[bucketKey('parent')].has(parentValue)}
                         onChecked={(isChecked: boolean) => onCheckedChange(parentKey, childKey, child, isChecked)}
                         title={overrides?.[childKey] ?? enumToReadable(childKey as string)}
                         itemId={formChildId(pid, childKey as string)}
