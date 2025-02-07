@@ -5,8 +5,9 @@ import { CSSProperties } from 'styled-components';
 import { useFilterContext } from './Filter.context.tsx';
 import { useCallback } from 'react';
 
+const formId = (identifier: any) => `standalon-${identifier}`;
+
 export interface FilterItemInterface extends Omit<TreeItemProps, 'title' | 'id' | 'itemId'> {
-    id: string;
     onChecked?: (checked: boolean) => void;
     filterKey: string;
     groupWithChildren?: boolean;
@@ -21,7 +22,7 @@ export interface FilterItemInterface extends Omit<TreeItemProps, 'title' | 'id' 
     };
 }
 
-function StandaloneFilter({ id, filterKey, title, value, groupWithChildren = false }: FilterItemInterface) {
+function StandaloneFilter({ filterKey, title, value, groupWithChildren = false }: FilterItemInterface) {
     const { checkedItems, onItemChecked, defaultBuckets, checkboxSize } = useFilterContext();
     const thisFilterItems = checkedItems?.[filterKey] ?? createDefaultBuckets();
 
@@ -42,8 +43,8 @@ function StandaloneFilter({ id, filterKey, title, value, groupWithChildren = fal
         <FilterItem
             size={checkboxSize}
             title={title}
-            itemId={id}
-            id={id} //TODO: Drop and replace with `value`? Or use same logic ParentChild uses
+            itemId={formId(value)}
+            id={formId(value)} //TODO: Drop and replace with `value`? Or use same logic ParentChild uses
             isChecked={thisFilterItems?.[getBucket()].has(value)}
             onChecked={onCheckedChange}
         />

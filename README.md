@@ -49,7 +49,6 @@ The `Filters` component serves as the topmost provider for managing filter state
 | Prop              | Type                               | Default     | Description                                                          |
 |-------------------|------------------------------------|-------------|----------------------------------------------------------------------|
 | `filterKey`       | `string`                          | **Required** | Unique key to group this filter.                                     |
-| `id`              | `string`                          | **Required** | Unique identifier for this standalone filter.                        |
 | `title`           | `string`                          | **Required** | Display title for the filter.                                        |
 | `value`           | `string`                          | **Required** | Value of the filter item.                                            |
 | `groupWithChildren` | `boolean`                       | `false`     | Whether this standalone filter should be grouped with child filters. |
