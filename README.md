@@ -1,6 +1,6 @@
-# Filters Component
+# MUI X Tree View Filters Component
 
-The `Filters` component is a flexible, reusable filtering system for managing hierarchical and standalone filters. It supports customizable parent-child mappings, sorting, and label overrides. This document provides an overview of the main `Filters` component, its child components (`NestedFilter` and `StandaloneFilter`), and the data structure used in its implementation.
+The `Filters` component is a flexible, reusable filtering system for managing hierarchical and standalone filters via MUI X Tree View. It supports customizable parent-child mappings, sorting, and label overrides. This document provides an overview of the main `Filters` component, its child components (`NestedFilter` and `StandaloneFilter`), and the data structure used in its implementation.
 
 ---
 
