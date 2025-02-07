@@ -1,8 +1,12 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta } from '@storybook/react';
+
 import { Grid2 } from '@mui/material';
 import { action } from '@storybook/addon-actions';
 import { useState } from 'react';
-import Filters, { FilterProps } from './Filters.tsx';
+import Filters, { FilterItems, MuiCheckboxSizes } from './Filters.tsx';
+import { breedMapping, PetBreed, PetType, sort, Overrides } from './data/data.ts';
+import NestedFilter from './NestedFilter.tsx';
+import StandaloneFilter from './StandaloneFilter.tsx';
 
 const meta = {
     title: 'Example/NestedFilter',
@@ -16,6 +20,10 @@ const meta = {
             control: 'boolean',
             description: 'Replace children with parent when all are checked',
         },
+        children: {
+            control: false,
+            disable: true,
+        },
         options: {
             control: false,
             disable: true,
@@ -26,15 +34,20 @@ const meta = {
     },
 } satisfies Meta<any>;
 
+interface TemplateProps {
+    replaceChildrenWithParentOnAllChecked: boolean;
+    checkboxSize: MuiCheckboxSizes;
+}
+
 export default meta;
 
-const Template = (args: FilterProps) => {
+const Template = (args: TemplateProps) => {
     // Destructure args to get the individual properties
-    const { options, ...restArgs } = args;
+    const { ...restArgs } = args;
 
-    const [filters, setFilters] = useState<Set<string>>(new Set());
+    const [filters, setFilters] = useState<FilterItems>({ filters: {} });
 
-    const handleFilterChange = (newFilters: Set<string>) => {
+    const handleFilterChange = (newFilters: FilterItems) => {
         setFilters(newFilters);
         action('onFilterChange')(newFilters); // This logs the emitted filters
     };
@@ -42,18 +55,48 @@ const Template = (args: FilterProps) => {
     // Ensure that options contains the updated values, including 'replaceChildrenWithParentOnAllChecked'
 
     const updatedOptions = {
-        ...options,
-        // @ts-ignore
-        replaceChildrenWithParentOnAllChecked: args['options.replaceChildrenWithParentOnAllChecked'],
+        replaceChildrenWithParentOnAllChecked: args.replaceChildrenWithParentOnAllChecked as boolean,
+    };
+
+    const CheckedItems = {
+        PetTypeBreed: {
+            parent: new Set<string>([PetType.Bird]),
+            child: new Set<string>([]),
+        },
     };
 
     return (
         <Grid2 container>
             <Grid2 size={{ xs: 6 }}>
-                <Filters {...restArgs} options={updatedOptions} onFilterChange={handleFilterChange} />
+                <Filters
+                    {...restArgs}
+                    checkboxSize={args.checkboxSize}
+                    initialCheckedItems={CheckedItems}
+                    onFilterChange={handleFilterChange}
+                    options={updatedOptions}
+                >
+                    <NestedFilter
+                        filterKey="PetTypeBreed"
+                        items={PetType}
+                        childItems={PetBreed}
+                        mapping={breedMapping}
+                        labelOverrides={Overrides}
+                        parentSort={sort}
+                    />
+                    <StandaloneFilter filterKey="PetTypeBreed" id="other" title="Other" value="OTHER" />
+                </Filters>
             </Grid2>
             <Grid2 size={{ xs: 6 }}>
-                <pre>{JSON.stringify(Array.from(filters), null, 2)}</pre> {/* Display the filters */}
+                {Object.keys(filters).map((key) => (
+                    <pre key={key}>
+                        {key}:
+                        {Object.keys(filters?.[key]).map((pc) => (
+                            <pre key={`${key}-${pc}`} style={{ marginLeft: '5px' }}>
+                                {pc}:{JSON.stringify(Array.from(filters?.[key]?.[pc]))}
+                            </pre>
+                        ))}
+                    </pre>
+                ))}
             </Grid2>
         </Grid2>
     );

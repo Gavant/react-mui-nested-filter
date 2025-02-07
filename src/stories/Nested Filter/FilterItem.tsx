@@ -82,7 +82,10 @@ function FilterItem({ id, indeterminate, itemId, isChecked, size, onChecked, tit
                         }}
                     />
                     &nbsp;
-                    <Title style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    <Title
+                        onClick={(_e) => onChecked?.(!isChecked)}
+                        style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                    >
                         <Typography fontSize={CheckboxSize[size].fontSize} noWrap variant="caption">
                             {title}
                         </Typography>
