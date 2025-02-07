@@ -91,9 +91,9 @@ export const breedMapping: Record<Exclude<PetType, PetType.Other>, PetBreed[]> =
 #### Sorting
 ```ts
 export const sort = {
-    [PetType.Cat]: 2,
+    [PetType.Cat]: 3,
     [PetType.Dog]: 1,
-    [PetType.Bird]: 3,
+    [PetType.Bird]: 2,
 };
 ```
 
