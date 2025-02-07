@@ -1,6 +1,9 @@
 # MUI X Tree View Filters Component
 
->NOTE: This library is a work in progres
+<div style="border: 1px solid #f0ad4e; background-color: #fcf8e3; color: black; padding: 10px; border-radius: 5px;">
+  <strong>🚧 Work in Progress:</strong> This project is not yet complete and is subject to change.
+</div>
+
 
 The `Filters` component is a flexible, reusable filtering system for managing hierarchical and standalone filters via MUI X Tree View. It supports customizable parent-child mappings, sorting, and label overrides. This document provides an overview of the main `Filters` component, its child components (`NestedFilter` and `StandaloneFilter`), and the data structure used in its implementation.
 
