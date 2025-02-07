@@ -43,7 +43,7 @@ function StandaloneFilter({ id, filterKey, title, value, groupWithChildren = fal
             size={checkboxSize}
             title={title}
             itemId={id}
-            id={id}
+            id={id} //TODO: Drop and replace with `value`? Or use same logic ParentChild uses
             isChecked={thisFilterItems?.[getBucket()].has(value)}
             onChecked={onCheckedChange}
         />
