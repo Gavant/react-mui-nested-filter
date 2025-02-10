@@ -20,6 +20,10 @@ const meta = {
             control: 'boolean',
             description: 'Replace children with parent when all are checked',
         },
+        initialCheckedItems: {
+            control: 'object',
+            description: 'Sets the initial checked values on render',
+        },
         children: {
             control: false,
             disable: true,
@@ -58,23 +62,10 @@ const Template = (args: TemplateProps) => {
         replaceChildrenWithParentOnAllChecked: args.replaceChildrenWithParentOnAllChecked as boolean,
     };
 
-    const CheckedItems = {
-        PetTypeBreed: {
-            parent: new Set<string>([PetType.Bird]),
-            child: new Set<string>([]),
-        },
-    };
-
     return (
         <Grid2 container>
             <Grid2 size={{ xs: 6 }}>
-                <Filters
-                    {...restArgs}
-                    checkboxSize={args.checkboxSize}
-                    initialCheckedItems={CheckedItems}
-                    onFilterChange={handleFilterChange}
-                    options={updatedOptions}
-                >
+                <Filters {...restArgs} checkboxSize={args.checkboxSize} onFilterChange={handleFilterChange} options={updatedOptions}>
                     <NestedFilter
                         filterKey="PetTypeBreed"
                         items={PetType}
@@ -83,7 +74,7 @@ const Template = (args: TemplateProps) => {
                         labelOverrides={Overrides}
                         parentSort={sort}
                     />
-                    <StandaloneFilter filterKey="PetTypeBreed" id="other" title="Other" value="OTHER" />
+                    <StandaloneFilter filterKey="PetTypeBreed" title="Other" value="OTHER" />
                 </Filters>
             </Grid2>
             <Grid2 size={{ xs: 6 }}>
