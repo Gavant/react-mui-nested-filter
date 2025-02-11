@@ -1,5 +1,5 @@
 import FilterItem from './FilterItem';
-import enumToReadable from '../../util/enumToReadable';
+import enumToReadable from '~/util/enumToReadable';
 import { useMemo, useRef } from 'react';
 import { ChildType, MappingKey, ParentType } from './NestedFilter';
 import { FilterOptions, useFilterContext } from './Filter.context';

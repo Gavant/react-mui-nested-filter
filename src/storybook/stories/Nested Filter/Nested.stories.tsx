@@ -3,12 +3,12 @@ import type { Meta } from '@storybook/react';
 import { Grid2 } from '@mui/material';
 import { action } from '@storybook/addon-actions';
 import { useState } from 'react';
-import Filters, { FilterItems, MuiCheckboxSizes } from '../../../components/Filter/Filters';
+import Filters, { FilterItems, MuiCheckboxSizes } from '~/components/Filter/Filters';
 import { breedMapping, PetBreed, PetType, sort, Overrides } from './data/data';
-import NestedFilter from '../../../components/Filter/NestedFilter';
-import StandaloneFilter from '../../../components/Filter/StandaloneFilter';
+import NestedFilter from '~/components/Filter/NestedFilter';
+import StandaloneFilter from '~/components/Filter/StandaloneFilter';
 
-const meta = {
+const meta: Meta<Record<string, unknown>> = {
     title: 'Example/NestedFilter',
     component: Filters,
     tags: ['autodocs'],
@@ -36,7 +36,7 @@ const meta = {
             disable: true,
         },
     },
-} satisfies Meta<any>;
+};
 
 interface TemplateProps {
     replaceChildrenWithParentOnAllChecked: boolean;
