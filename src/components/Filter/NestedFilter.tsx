@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
-import ParentChildFilter from './ParentChildFilter.tsx';
-import { FilterOptions, useFilterContext } from './Filter.context.tsx';
-import { createDefaultBuckets } from './Filters.tsx';
+import ParentChildFilter from './ParentChildFilter';
+import { FilterOptions, useFilterContext } from './Filter.context';
+import { createDefaultBuckets } from './Filters';
 
 const formParentId = (identifier: any) => `parent${identifier}`;
 const formChildId = (parentId: any, childId: any) => `${parentId}-node${childId}`;

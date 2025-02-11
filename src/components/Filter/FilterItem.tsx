@@ -1,4 +1,4 @@
-import { CheckboxSizes, MuiCheckboxSizes } from './Filters.tsx';
+import { CheckboxSizes, MuiCheckboxSizes } from './Filters';
 import { Checkbox, Typography } from '@mui/material';
 import styled, { CSSProperties } from 'styled-components';
 import { TreeItem, TreeItemProps } from '@mui/x-tree-view/TreeItem';
@@ -83,7 +83,7 @@ function FilterItem({ id, indeterminate, itemId, isChecked, size, onChecked, tit
                     />
                     &nbsp;
                     <Title
-                        onClick={(_e) => onChecked?.(!isChecked)}
+                        onClick={() => onChecked?.(!isChecked)}
                         style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                     >
                         <Typography fontSize={CheckboxSize[size].fontSize} noWrap variant="caption">

@@ -1,8 +1,8 @@
-import FilterItem from './FilterItem.tsx';
+import FilterItem from './FilterItem';
 import { TreeItemProps } from '@mui/x-tree-view/TreeItem';
-import { createDefaultBuckets } from './Filters.tsx';
+import { createDefaultBuckets } from './Filters';
 import { CSSProperties } from 'styled-components';
-import { useFilterContext } from './Filter.context.tsx';
+import { useFilterContext } from './Filter.context';
 import { useCallback } from 'react';
 
 const formId = (identifier: any) => `standalone-${identifier}`;

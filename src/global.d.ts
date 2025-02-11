@@ -3,5 +3,3 @@ declare global {
         isSubsetOf(otherSet: Set<T>): boolean;
     }
 }
-
-export {};

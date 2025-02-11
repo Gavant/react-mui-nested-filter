@@ -1,5 +1,5 @@
 import { createContext, SyntheticEvent, useContext } from 'react';
-import { CheckboxSizes } from './Filters.tsx';
+import { CheckboxSizes } from './Filters';
 import { CheckboxProps, TypographyProps } from '@mui/material';
 import { TreeItemProps } from '@mui/x-tree-view/TreeItem';
 

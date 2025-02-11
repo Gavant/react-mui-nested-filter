@@ -3,10 +3,10 @@ import type { Meta } from '@storybook/react';
 import { Grid2 } from '@mui/material';
 import { action } from '@storybook/addon-actions';
 import { useState } from 'react';
-import Filters, { FilterItems, MuiCheckboxSizes } from '../../../components/Filter/Filters.tsx';
-import { breedMapping, PetBreed, PetType, sort, Overrides } from './data/data.ts';
-import NestedFilter from '../../../components/Filter/NestedFilter.tsx';
-import StandaloneFilter from '../../../components/Filter/StandaloneFilter.tsx';
+import Filters, { FilterItems, MuiCheckboxSizes } from '../../../components/Filter/Filters';
+import { breedMapping, PetBreed, PetType, sort, Overrides } from './data/data';
+import NestedFilter from '../../../components/Filter/NestedFilter';
+import StandaloneFilter from '../../../components/Filter/StandaloneFilter';
 
 const meta = {
     title: 'Example/NestedFilter',

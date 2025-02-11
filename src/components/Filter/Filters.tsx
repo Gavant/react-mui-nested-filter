@@ -1,7 +1,7 @@
 import { CheckboxProps } from '@mui/material';
 import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
 import { ReactNode, SyntheticEvent, useState } from 'react';
-import { CheckedItemsType, FilterContext, FilterOptions } from './Filter.context.tsx';
+import { CheckedItemsType, FilterContext, FilterOptions } from './Filter.context';
 
 export type MuiCheckboxSizes = Pick<CheckboxProps, 'size'>['size'];
 

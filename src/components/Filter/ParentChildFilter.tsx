@@ -1,8 +1,8 @@
-import FilterItem from './FilterItem.tsx';
-import enumToReadable from '../../util/enumToReadable.ts';
+import FilterItem from './FilterItem';
+import enumToReadable from '../../util/enumToReadable';
 import { useMemo, useRef } from 'react';
-import { ChildType, MappingKey, ParentType } from './NestedFilter.tsx';
-import { FilterOptions, useFilterContext } from './Filter.context.tsx';
+import { ChildType, MappingKey, ParentType } from './NestedFilter';
+import { FilterOptions, useFilterContext } from './Filter.context';
 
 interface ParentChildFilterProps<P extends ParentType, C extends ChildType, ParentKey extends keyof P, ChildKey extends keyof C> {
     parentKey: keyof P;
