@@ -117,7 +117,6 @@ function NestedFilter<I extends ParentType, C extends ChildType, M extends Mappi
         if (isChecked) {
             // adding
             if (childKey) {
-                debugger;
                 if (useOther(checkedUpdate) && childKey === getOtherKey()) {
                     checkedUpdate[getOtherKey()].add(value);
                 } else {
