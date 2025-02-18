@@ -3,13 +3,19 @@ import { CheckboxSizes } from './Filters';
 import { CheckboxProps, TypographyProps } from '@mui/material';
 import { TreeItemProps } from '@mui/x-tree-view/TreeItem';
 
+export const OTHER_DEFAULT = 'OTHER';
+
 export type FilterOptions = {
     replaceChildrenWithParentOnAllChecked?: boolean;
     combineChildrenAndParentItems?: boolean; //TODO: ditch this
     filterSortNameOverrides?: { default?: string; parent?: string; child?: string };
+    childOptions?: {
+        childOtherTitleOverride?: string;
+        childItemProps?: TreeItemProps; //TODO: Implement
+    };
+    otherRename?: string;
     checkboxProps?: CheckboxProps; //TODO: Implement
     labelProps?: TypographyProps; //TODO: Implement
-    childItemProps?: TreeItemProps; //TODO: Implement
     parentItemProps?: TreeItemProps; //TODO: Implement
 };
 

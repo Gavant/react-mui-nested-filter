@@ -1,19 +1,21 @@
 import { useEffect, useMemo, useRef } from 'react';
 import ParentChildFilter from './ParentChildFilter';
-import { FilterOptions, useFilterContext } from './Filter.context';
+import { FilterOptions, NestedItemsType, OTHER_DEFAULT, useFilterContext } from './Filter.context';
 import { createDefaultBuckets } from './Filters';
 
 const formParentId = (identifier: any) => `parent${identifier}`;
 const formChildId = (parentId: any, childId: any) => `${parentId}-node${childId}`;
 
 function sortFunction<K extends Record<string, string>>(
-    sort: Record<K[keyof K], number> | undefined
+    sort: Partial<Record<K[keyof K], number>> | undefined
 ): ((a: keyof K, b: keyof K) => number) | undefined {
     if (!sort) {
         return undefined;
     }
     return (a: keyof K, b: keyof K) => {
-        return sort[a as K[keyof K]] - sort[b as K[keyof K]];
+        const sortA = sort[a as K[keyof K]] ?? 0;
+        const sortB = sort[b as K[keyof K]] ?? 0;
+        return sortA - sortB;
     };
 }
 
@@ -32,9 +34,10 @@ type NestedFilterProps<I extends ParentType, C extends ChildType, M extends Mapp
     childItems: C;
     mapping: M;
     parentSort?: Record<Value<I>, number>;
-    childSort?: Record<Value<I>, number>;
+    childSort?: Partial<Record<Value<C>, number>>;
     labelOverrides?: Partial<Record<Value<I> | Value<C>, string>>;
     options?: FilterOptions;
+    includeOther?: boolean | Partial<Record<Value<I>, boolean>>;
 };
 
 type Entries<T> = {
@@ -47,6 +50,7 @@ function NestedFilter<I extends ParentType, C extends ChildType, M extends Mappi
     childItems,
     mapping,
     parentSort,
+    includeOther,
     childSort,
     labelOverrides,
 }: NestedFilterProps<I, C, M>) {
@@ -54,7 +58,16 @@ function NestedFilter<I extends ParentType, C extends ChildType, M extends Mappi
     const sortChild = useRef(sortFunction(childSort));
     const { checkedItems, onItemChecked, defaultBuckets, options } = useFilterContext();
     const thisFilterItems = checkedItems?.[filterKey] ?? createDefaultBuckets();
-    const { replaceChildrenWithParentOnAllChecked, combineChildrenAndParentItems, filterSortNameOverrides } = options;
+    const { replaceChildrenWithParentOnAllChecked, combineChildrenAndParentItems, filterSortNameOverrides, otherRename } = options;
+    const getOtherKey = () => (otherRename ? otherRename : OTHER_DEFAULT);
+
+    const useOther = (collection: NestedItemsType) => {
+        if (includeOther && !collection[getOtherKey()]) {
+            collection[getOtherKey()] = new Set<string>();
+        }
+
+        return includeOther;
+    };
 
     useEffect(() => {
         onItemChecked(filterKey, thisFilterItems);
@@ -104,40 +117,55 @@ function NestedFilter<I extends ParentType, C extends ChildType, M extends Mappi
         if (isChecked) {
             // adding
             if (childKey) {
-                checkedUpdate[bucketKey('child')].add(value);
-                if (children.every((item) => checkedUpdate[bucketKey('child')].has(item)) && replaceChildrenWithParentOnAllChecked) {
-                    // Every child is checked - replace with parent
-                    children.forEach((item) => checkedUpdate[bucketKey('child')].delete(item));
-                    checkedUpdate[bucketKey('parent')].add(parentValue);
+                debugger;
+                if (useOther(checkedUpdate) && childKey === getOtherKey()) {
+                    checkedUpdate[getOtherKey()].add(value);
+                } else {
+                    checkedUpdate[bucketKey('child')].add(value);
+                    if (children.every((item) => checkedUpdate[bucketKey('child')].has(item)) && replaceChildrenWithParentOnAllChecked) {
+                        // Every child is checked - replace with parent
+                        children.forEach((item) => checkedUpdate[bucketKey('child')].delete(item));
+                        checkedUpdate[bucketKey('parent')].add(parentValue);
+                    }
                 }
             } else {
                 // parent
                 const checkedChildItems = children.filter((item) => checkedUpdate[bucketKey('child')].has(item));
                 checkedChildItems.forEach((childItem) => checkedUpdate[bucketKey('child')].delete(childItem));
                 checkedUpdate[bucketKey('parent')].add(value);
+                if (useOther(checkedUpdate)) {
+                    checkedUpdate[getOtherKey()]?.add(value);
+                }
             }
         } else {
             // removing
             if (childKey) {
                 // Child
-                if (checkedUpdate[bucketKey('child')].has(childItems[childKey])) {
-                    // If the child key is already there then we have a straight-forward removal
-                    checkedUpdate[bucketKey('child')].delete(value);
-                } else if (checkedUpdate[bucketKey('parent')].has(parentValue)) {
-                    // The parent is standing in for all individual items - so we have to remove the parent, add all the children
-                    // excluding our checked item
-                    // Add all children
-                    children.forEach((item) => checkedUpdate[bucketKey('child')].add(item));
-                    // remove the parent
-                    checkedUpdate[bucketKey('parent')].delete(parentValue);
-                    // remove the child we unchecked
-                    checkedUpdate[bucketKey('child')].delete(value);
+                if (childKey === getOtherKey() && useOther(checkedUpdate)) {
+                    checkedUpdate[getOtherKey()].delete(value);
+                } else {
+                    if (checkedUpdate[bucketKey('child')].has(childItems[childKey])) {
+                        // If the child key is already there then we have a straight-forward removal
+                        checkedUpdate[bucketKey('child')].delete(value);
+                    } else if (checkedUpdate[bucketKey('parent')].has(parentValue)) {
+                        // The parent is standing in for all individual items - so we have to remove the parent, add all the children
+                        // excluding our checked item
+                        // Add all children
+                        children.forEach((item) => checkedUpdate[bucketKey('child')].add(item));
+                        // remove the parent
+                        checkedUpdate[bucketKey('parent')].delete(parentValue);
+                        // remove the child we unchecked
+                        checkedUpdate[bucketKey('child')].delete(value);
+                    }
                 }
             } else {
                 // Remove parent + all children
                 const checkedChildItems = children.filter((b) => checkedUpdate[bucketKey('child')].has(b));
                 checkedChildItems.forEach((childItem) => checkedUpdate[bucketKey('child')].delete(childItem));
                 checkedUpdate[bucketKey('parent')].delete(value);
+                if (useOther(checkedUpdate)) {
+                    checkedUpdate[getOtherKey()]?.delete(value);
+                }
             }
         }
 
@@ -164,6 +192,7 @@ function NestedFilter<I extends ParentType, C extends ChildType, M extends Mappi
                             formChildId={formChildId}
                             checkedItems={thisFilterItems}
                             options={options}
+                            includeOther={includeOther}
                         />
                     );
                 })}

@@ -2,7 +2,7 @@ import FilterItem from './FilterItem';
 import enumToReadable from '~/util/enumToReadable';
 import { useMemo, useRef } from 'react';
 import { ChildType, MappingKey, ParentType } from './NestedFilter';
-import { FilterOptions, useFilterContext } from './Filter.context';
+import { FilterOptions, OTHER_DEFAULT, useFilterContext } from './Filter.context';
 
 interface ParentChildFilterProps<P extends ParentType, C extends ChildType, ParentKey extends keyof P, ChildKey extends keyof C> {
     parentKey: keyof P;
@@ -11,6 +11,7 @@ interface ParentChildFilterProps<P extends ParentType, C extends ChildType, Pare
     childItems: MappingKey<C>[] | undefined;
     overrides?: Partial<Record<P[ParentKey] | C[ChildKey], string>>;
     childReverseLookup: (value: MappingKey<C>) => keyof C;
+    includeOther?: boolean | Partial<Record<MappingKey<P>, boolean>>;
     childSort: ((a: C[ChildKey], b: C[ChildKey]) => number) | undefined;
     onCheckedChange: (parentKey: ParentKey, childKey: ChildKey | undefined, value: string, isChecked: boolean) => void;
     formChildId: (parentId: string, child: string) => string;
@@ -26,6 +27,7 @@ function ParentChildFilter<P extends ParentType, C extends ChildType>({
     childItems,
     overrides,
     childReverseLookup,
+    includeOther,
     childSort,
     onCheckedChange,
     checkedItems,
@@ -33,8 +35,11 @@ function ParentChildFilter<P extends ParentType, C extends ChildType>({
     options = { replaceChildrenWithParentOnAllChecked: true, combineChildrenAndParentItems: false },
 }: ParentChildFilterProps<P, C, keyof P, keyof C>) {
     const { checkboxSize, defaultBuckets } = useFilterContext();
-    const { combineChildrenAndParentItems, filterSortNameOverrides } = options;
+    const { combineChildrenAndParentItems, filterSortNameOverrides, childOptions, otherRename } = options;
     const childSet = useRef<Set<string>>(new Set(childItems));
+    const isIncludingOther =
+        includeOther === true || (typeof includeOther === 'object' && includeOther !== null && includeOther[parentValue] === true);
+    const getOtherKey = () => (otherRename ? otherRename : OTHER_DEFAULT);
 
     const bucketKey = (parentChild: 'parent' | 'child') => {
         if (filterSortNameOverrides) {
@@ -74,6 +79,16 @@ function ParentChildFilter<P extends ParentType, C extends ChildType>({
                     />
                 );
             })}
+            {isIncludingOther ? (
+                <FilterItem
+                    key={`${pid}-OTHER`}
+                    size={checkboxSize}
+                    isChecked={checkedItems['OTHER']?.has(parentValue) || checkedItems[bucketKey('parent')].has(parentValue)}
+                    onChecked={(isChecked: boolean) => onCheckedChange(parentKey, getOtherKey(), parentValue, isChecked)}
+                    title={childOptions?.childOtherTitleOverride ?? otherRename ?? 'Other'}
+                    itemId={formChildId(pid, 'OTHER')}
+                />
+            ) : null}
         </FilterItem>
     );
 }

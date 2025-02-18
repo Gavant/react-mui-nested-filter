@@ -1,8 +1,19 @@
 {
   "name": "@gavant/react-mui-nested-filter",
-  "private": true,
-  "version": "0.0.1",
+  "version": "0.0.9",
   "type": "module",
+  "main": "dist/react-mui-nested-filter.umd.js",
+  "module": "dist/react-mui-nested-filter.es.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "package.json"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Gavant/react-mui-nested-filter"
+  },
   "scripts": {
     "dev": "storybook dev -p 6006",
     "build:config": "tsc && mv vite.config.js vite.config.mjs",

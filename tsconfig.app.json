@@ -4,7 +4,7 @@
     "target": "ESNext",
     "useDefineForClassFields": true,
     "paths": {
-      "~/*": ["./src/*"],
+      "~/*": ["./src/*"]
     },
     "lib": [
       "ESNext",
@@ -14,10 +14,13 @@
     "module": "ESNext",
     "skipLibCheck": true,
     /* Bundler Mode */
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": true,
+    "outDir": "./dist",
     "moduleResolution": "bundler",
     "isolatedModules": true,
     "moduleDetection": "force",
-    "noEmit": true,
     "jsx": "react-jsx",
     /* Linting */
     "strict": true,
