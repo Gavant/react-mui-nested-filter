@@ -7,6 +7,25 @@ import Filters, { FilterItems, MuiCheckboxSizes } from '~/components/Filter/Filt
 import { breedMapping, PetBreed, PetType, sort, Overrides } from './data/data';
 import NestedFilter from '~/components/Filter/NestedFilter';
 import StandaloneFilter from '~/components/Filter/StandaloneFilter';
+import styled from 'styled-components';
+
+const NestedFilterWrapped = styled(NestedFilter)`
+    //background: red;
+    //
+    //.parent-filter-item {
+    //    background-color: blue !important;
+    //}
+    //
+    //.child-filter-item {
+    //    background-color: tan !important;
+    //    .checkbox {
+    //        background: pink !important;
+    //    }
+    //    .label {
+    //        background-color: green !important;
+    //    }
+    //}
+`;
 
 const meta: Meta<Record<string, unknown>> = {
     title: 'Example/NestedFilter',
@@ -66,7 +85,7 @@ const Template = (args: TemplateProps) => {
         <Grid2 container>
             <Grid2 size={{ xs: 6 }}>
                 <Filters {...restArgs} checkboxSize={args.checkboxSize} onFilterChange={handleFilterChange} options={updatedOptions}>
-                    <NestedFilter
+                    <NestedFilterWrapped
                         filterKey="PetTypeBreed"
                         items={PetType}
                         childItems={PetBreed}

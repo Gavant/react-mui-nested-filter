@@ -76,7 +76,7 @@ function ParentChildFilter<P extends ParentType, C extends ChildType>({
                         className="child-filter-item"
                         isChecked={checkedItems[bucketKey('child')].has(child) || checkedItems[bucketKey('parent')].has(parentValue)}
                         onChecked={(isChecked: boolean) => onCheckedChange(parentKey, childKey, child, isChecked)}
-                        title={overrides?.[childKey] ?? enumToReadable(childKey as string)}
+                        title={overrides?.[childKey] ?? enumToReadable(child as string)}
                         itemId={formChildId(pid, childKey as string)}
                     />
                 );
