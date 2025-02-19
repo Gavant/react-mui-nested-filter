@@ -62,15 +62,16 @@ type FilterItemProps = FilterItemInterface &
         | { children?: undefined; indeterminate?: never } // `indeterminate` is not allowed if `children` are not passed
     );
 
-function FilterItem({ id, indeterminate, itemId, isChecked, size, onChecked, title, children, labelProps }: FilterItemProps) {
+function FilterItem({ id, indeterminate, itemId, isChecked, size, onChecked, title, children, labelProps, className }: FilterItemProps) {
     return (
         <TreeItem
             itemId={itemId}
             id={id}
+            className={className}
             label={
                 <Label $padding={0}>
                     <Checkbox
-                        className={labelProps?.className}
+                        className={'checkbox'}
                         style={labelProps?.style}
                         checked={isChecked}
                         indeterminate={indeterminate}
@@ -83,6 +84,7 @@ function FilterItem({ id, indeterminate, itemId, isChecked, size, onChecked, tit
                     />
                     &nbsp;
                     <Title
+                        className={labelProps?.className ?? 'label'}
                         onClick={() => onChecked?.(!isChecked)}
                         style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                     >

@@ -32,6 +32,7 @@ type NestedFilterProps<I extends ParentType, C extends ChildType, M extends Mapp
     filterKey: string;
     items: I;
     childItems: C;
+    className?: string;
     mapping: M;
     parentSort?: Record<Value<I>, number>;
     childSort?: Partial<Record<Value<C>, number>>;
@@ -48,6 +49,7 @@ function NestedFilter<I extends ParentType, C extends ChildType, M extends Mappi
     filterKey,
     items,
     childItems,
+    className,
     mapping,
     parentSort,
     includeOther,
@@ -172,7 +174,7 @@ function NestedFilter<I extends ParentType, C extends ChildType, M extends Mappi
     };
 
     return (
-        <>
+        <div className={className}>
             {Object.keys(mapping)
                 .sort(sortParent.current)
                 .map((key) => {
@@ -195,7 +197,7 @@ function NestedFilter<I extends ParentType, C extends ChildType, M extends Mappi
                         />
                     );
                 })}
-        </>
+        </div>
     );
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "@gavant/react-mui-nested-filter",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "type": "module",
   "main": "dist/react-mui-nested-filter.umd.js",
   "module": "dist/react-mui-nested-filter.es.js",
@@ -32,7 +32,7 @@
     "@storybook/addon-actions": "^8.5.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "styled-components": "^6.1.14"
+    "styled-components": "^6.1.15"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^3.2.3",

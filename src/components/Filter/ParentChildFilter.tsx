@@ -61,6 +61,7 @@ function ParentChildFilter<P extends ParentType, C extends ChildType>({
             id={pid}
             itemId={pid}
             size={checkboxSize}
+            className="parent-filter-item"
             isChecked={checkedItems[bucketKey('parent')]?.has(parentValue) || allChildrenChecked()}
             indeterminate={hasAnyItemsChecked && !allChildrenChecked()}
             onChecked={(isChecked: boolean) => onCheckedChange(parentKey, undefined, parentValue, isChecked)}
@@ -72,6 +73,7 @@ function ParentChildFilter<P extends ParentType, C extends ChildType>({
                     <FilterItem
                         key={child}
                         size={checkboxSize}
+                        className="child-filter-item"
                         isChecked={checkedItems[bucketKey('child')].has(child) || checkedItems[bucketKey('parent')].has(parentValue)}
                         onChecked={(isChecked: boolean) => onCheckedChange(parentKey, childKey, child, isChecked)}
                         title={overrides?.[childKey] ?? enumToReadable(childKey as string)}
@@ -83,6 +85,7 @@ function ParentChildFilter<P extends ParentType, C extends ChildType>({
                 <FilterItem
                     key={`${pid}-OTHER`}
                     size={checkboxSize}
+                    className="child-filter-item"
                     isChecked={checkedItems['OTHER']?.has(parentValue) || checkedItems[bucketKey('parent')].has(parentValue)}
                     onChecked={(isChecked: boolean) => onCheckedChange(parentKey, getOtherKey(), parentValue, isChecked)}
                     title={childOptions?.childOtherTitleOverride ?? otherRename ?? 'Other'}
