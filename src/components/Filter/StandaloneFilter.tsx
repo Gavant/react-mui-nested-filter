@@ -22,7 +22,7 @@ export interface FilterItemInterface extends Omit<TreeItemProps, 'title' | 'id' 
     };
 }
 
-function StandaloneFilter({ filterKey, title, value, groupWithChildren = false }: FilterItemInterface) {
+function StandaloneFilter({ filterKey, title, value, groupWithChildren = false, className }: FilterItemInterface) {
     const { checkedItems, onItemChecked, defaultBuckets, checkboxSize } = useFilterContext();
     const thisFilterItems = checkedItems?.[filterKey] ?? createDefaultBuckets();
 
@@ -47,6 +47,7 @@ function StandaloneFilter({ filterKey, title, value, groupWithChildren = false }
             id={formId(value)}
             isChecked={thisFilterItems?.[getBucket()].has(value)}
             onChecked={onCheckedChange}
+            className={className}
         />
     );
 }

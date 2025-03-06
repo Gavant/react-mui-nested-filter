@@ -1,6 +1,6 @@
 {
   "name": "@gavant/react-mui-nested-filter",
-  "version": "0.0.13",
+  "version": "0.0.15",
   "type": "module",
   "main": "dist/react-mui-nested-filter.umd.js",
   "module": "dist/react-mui-nested-filter.es.js",
