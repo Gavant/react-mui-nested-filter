@@ -12,7 +12,7 @@ export default defineConfig({
             fileName: (format) => `react-mui-nested-filter.${format}.js`,
         },
         rollupOptions: {
-            external: ['react', 'react-dom'],
+            external: ['react', 'react-dom', '@mui/material'],
             output: {
                 globals: {
                     react: 'React',
