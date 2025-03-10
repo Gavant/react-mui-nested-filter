@@ -2,7 +2,6 @@ export default function enumToReadable(text: string, toSentenceCase = false) {
     if (!text) {
         console.error('Text passed as undefined');
     }
-    console.log(text);
     // Replace underscores with spaces, convert to lowercase, and split into words
     const words = text.toLowerCase().split('_');
 
