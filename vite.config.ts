@@ -11,6 +11,7 @@ export default defineConfig({
             name: 'ReactMuiNestedFilter',
             fileName: (format) => `react-mui-nested-filter.${format}.js`,
         },
+        minify: false,
         rollupOptions: {
             external: ['react', 'react-dom', '@mui/material'],
             output: {

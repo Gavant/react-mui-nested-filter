@@ -29,20 +29,6 @@ const NestedFilterWrapped = styled(NestedFilter)`
 
 const StandaloneFilterWrapped = styled(StandaloneFilter)`
     background: red;
-
-    .parent-filter-item {
-        background-color: blue !important;
-    }
-
-    .child-filter-item {
-        background-color: tan !important;
-        .checkbox {
-            background: pink !important;
-        }
-        .label {
-            background-color: green !important;
-        }
-    }
 `;
 
 const meta: Meta<Record<string, unknown>> = {

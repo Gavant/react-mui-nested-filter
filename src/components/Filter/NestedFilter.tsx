@@ -3,8 +3,8 @@ import ParentChildFilter from './ParentChildFilter';
 import { FilterOptions, NestedItemsType, OTHER_DEFAULT, useFilterContext } from './Filter.context';
 import { createDefaultBuckets } from './Filters';
 
-const formParentId = (identifier: any) => `parent${identifier}`;
-const formChildId = (parentId: any, childId: any) => `${parentId}-node${childId}`;
+const formParentId = (filterKey: string, identifier: any) => `${filterKey}-parent-${identifier}`;
+const formChildId = (filterKey: string, parentId: any, childId: any) => `${filterKey}-${parentId}-child-${childId}`;
 
 function sortFunction<K extends Record<string, string>>(
     sort: Partial<Record<K[keyof K], number>> | undefined
@@ -184,10 +184,11 @@ function NestedFilter<I extends ParentType, C extends ChildType, M extends Mappi
                             key={key}
                             parentKey={reverseLookup(parentValue, itemReverseLookup)}
                             parentValue={parentValue}
-                            pid={formParentId(parentValue)}
+                            pid={formParentId(filterKey, parentValue)}
                             childItems={mapping[parentValue]}
                             childReverseLookup={(value: Value<C>) => reverseLookup(value, childItemReverseLookup)}
                             childSort={sortChild.current}
+                            filterKey={filterKey}
                             overrides={labelOverrides}
                             onCheckedChange={onCheckedChange}
                             formChildId={formChildId}

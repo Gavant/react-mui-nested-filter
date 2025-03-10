@@ -9,12 +9,13 @@ interface ParentChildFilterProps<P extends ParentType, C extends ChildType, Pare
     parentValue: MappingKey<P>;
     pid: string;
     childItems: MappingKey<C>[] | undefined;
+    filterKey: string;
     overrides?: Partial<Record<P[ParentKey] | C[ChildKey], string>>;
     childReverseLookup: (value: MappingKey<C>) => keyof C;
     includeOther?: boolean | Partial<Record<MappingKey<P>, boolean>>;
     childSort: ((a: C[ChildKey], b: C[ChildKey]) => number) | undefined;
     onCheckedChange: (parentKey: ParentKey, childKey: ChildKey | undefined, value: string, isChecked: boolean) => void;
-    formChildId: (parentId: string, child: string) => string;
+    formChildId: (filterKey: string, parentId: string, child: string) => string;
     options: FilterOptions;
     buckets?: { parent: string; child: string };
     checkedItems: Record<string, Set<string>>;
@@ -25,6 +26,7 @@ function ParentChildFilter<P extends ParentType, C extends ChildType>({
     parentValue,
     pid,
     childItems,
+    filterKey,
     overrides,
     childReverseLookup,
     includeOther,
@@ -77,7 +79,7 @@ function ParentChildFilter<P extends ParentType, C extends ChildType>({
                         isChecked={checkedItems[bucketKey('child')].has(child) || checkedItems[bucketKey('parent')].has(parentValue)}
                         onChecked={(isChecked: boolean) => onCheckedChange(parentKey, childKey, child, isChecked)}
                         title={overrides?.[childKey] ?? enumToReadable(child as string)}
-                        itemId={formChildId(pid, childKey as string)}
+                        itemId={formChildId(filterKey, pid, childKey as string)}
                     />
                 );
             })}
@@ -89,7 +91,7 @@ function ParentChildFilter<P extends ParentType, C extends ChildType>({
                     isChecked={checkedItems['OTHER']?.has(parentValue) || checkedItems[bucketKey('parent')].has(parentValue)}
                     onChecked={(isChecked: boolean) => onCheckedChange(parentKey, getOtherKey(), parentValue, isChecked)}
                     title={childOptions?.childOtherTitleOverride ?? otherRename ?? 'Other'}
-                    itemId={formChildId(pid, 'OTHER')}
+                    itemId={formChildId(filterKey, pid, 'OTHER')}
                 />
             ) : null}
         </FilterItem>

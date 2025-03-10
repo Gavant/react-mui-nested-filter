@@ -5,7 +5,7 @@ import { CSSProperties } from 'styled-components';
 import { useFilterContext } from './Filter.context';
 import { useCallback } from 'react';
 
-const formId = (identifier: any) => `standalone-${identifier}`;
+const formId = (filterKey: string, identifier: any) => `${filterKey}-standalone-${identifier}`;
 
 export interface FilterItemInterface extends Omit<TreeItemProps, 'title' | 'id' | 'itemId'> {
     onChecked?: (checked: boolean) => void;
@@ -43,8 +43,8 @@ function StandaloneFilter({ filterKey, title, value, groupWithChildren = false, 
         <FilterItem
             size={checkboxSize}
             title={title}
-            itemId={formId(value)}
-            id={formId(value)}
+            itemId={formId(filterKey, value)}
+            id={formId(filterKey, value)}
             isChecked={thisFilterItems?.[getBucket()].has(value)}
             onChecked={onCheckedChange}
             className={className}
