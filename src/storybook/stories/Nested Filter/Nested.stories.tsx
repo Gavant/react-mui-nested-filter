@@ -10,26 +10,18 @@ import StandaloneFilter from '~/components/Filter/StandaloneFilter';
 import styled from 'styled-components';
 
 const NestedFilterWrapped = styled(NestedFilter)`
-    background: red;
-
     .parent-filter-item {
-        background-color: blue !important;
     }
 
     .child-filter-item {
-        background-color: tan !important;
         .checkbox {
-            background: pink !important;
         }
         .label {
-            background-color: green !important;
         }
     }
 `;
 
-const StandaloneFilterWrapped = styled(StandaloneFilter)`
-    background: red;
-`;
+const StandaloneFilterWrapped = styled(StandaloneFilter)``;
 
 const meta: Meta<Record<string, unknown>> = {
     title: 'Example/NestedFilter',
@@ -98,6 +90,7 @@ const Template = (args: TemplateProps) => {
                         parentSort={sort}
                     />
                     <StandaloneFilterWrapped filterKey="PetTypeBreed" title="Other" value="OTHER" />
+                    <StandaloneFilter filterKey="somethingElse" title="Something Else" value="2" />
                 </Filters>
             </Grid2>
             <Grid2 size={{ xs: 6 }}>
