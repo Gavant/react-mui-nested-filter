@@ -18,7 +18,7 @@ export default defineConfig({
         },
         minify: false,
         rollupOptions: {
-            external: ['react', 'react-dom', '@mui/material'],
+            external: ['react', 'react-dom', '@mui/material', '@mui/x-tree-view/SimpleTreeView'],
             output: {
                 globals: {
                     react: 'React',

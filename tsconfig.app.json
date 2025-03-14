@@ -3,9 +3,6 @@
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "target": "ESNext",
     "useDefineForClassFields": true,
-    "paths": {
-      "~/*": ["./src/*"]
-    },
     "lib": [
       "ESNext",
       "DOM",

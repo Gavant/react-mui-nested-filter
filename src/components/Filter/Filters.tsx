@@ -1,6 +1,6 @@
 import { CheckboxProps } from '@mui/material';
 import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
-import { ReactNode, SyntheticEvent, useState } from 'react';
+import { ReactNode, SyntheticEvent, useState, forwardRef, useImperativeHandle, Ref } from 'react';
 import { CheckedItemsType, FilterContext, FilterOptions } from './Filter.context';
 
 export type MuiCheckboxSizes = Pick<CheckboxProps, 'size'>['size'];
@@ -20,20 +20,27 @@ export interface FilterProps {
     initialCheckedItems?: CheckedItemsType;
     controlledCheckedItems?: CheckedItemsType;
     onFilterChange: (updatedFilters: CheckedItemsType) => void;
-    options?: FilterOptions; // Add a specific type for options
+    options?: FilterOptions;
     children: ReactNode | ReactNode[];
 }
 
-function Filters<T extends boolean>({
-    checkboxSize = 'medium',
-    initialCheckedItems,
-    onFilterChange,
-    controlledCheckedItems,
-    options = { replaceChildrenWithParentOnAllChecked: true, combineChildrenAndParentItems: true } as FilterOptions & {
-        combineChildrenAndParentItems: T;
-    },
-    children,
-}: FilterProps) {
+export interface FilterRef {
+    clearFilters: () => void;
+}
+
+const Filters = forwardRef<FilterRef, FilterProps>(function Filters<T extends boolean>(
+    {
+        checkboxSize = 'medium',
+        initialCheckedItems,
+        onFilterChange,
+        controlledCheckedItems,
+        options = { replaceChildrenWithParentOnAllChecked: true, combineChildrenAndParentItems: true } as FilterOptions & {
+            combineChildrenAndParentItems: T;
+        },
+        children,
+    }: FilterProps,
+    ref: Ref<FilterRef>
+) {
     const isControlled = controlledCheckedItems !== undefined;
     const [items, setItems] = useState<Record<string, { isExpanded: boolean }>>({});
     const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
@@ -64,9 +71,17 @@ function Filters<T extends boolean>({
 
     const onItemChecked = (key: string, update: Record<string, Set<string>>) => {
         const result = setCheckedItems(key, update);
-
         onFilterChange(result);
     };
+
+    useImperativeHandle(ref, () => ({
+        clearFilters: () => {
+            setCheckedItemsWrapped({});
+            setExpandedItems(new Set());
+            setItems({});
+            onFilterChange({}); // Notify parent
+        },
+    }));
 
     const contextValue = {
         checkboxSize,
@@ -86,6 +101,6 @@ function Filters<T extends boolean>({
             </SimpleTreeView>
         </FilterContext.Provider>
     );
-}
+});
 
 export default Filters;

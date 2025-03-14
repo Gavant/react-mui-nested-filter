@@ -1,12 +1,12 @@
 import type { Meta } from '@storybook/react';
 
-import { Grid2 } from '@mui/material';
+import { Button, Grid2 } from '@mui/material';
 import { action } from '@storybook/addon-actions';
-import { useState } from 'react';
-import Filters, { FilterItems, MuiCheckboxSizes } from '~/components/Filter/Filters';
+import { useRef, useState } from 'react';
+import Filters, { FilterItems, FilterRef, MuiCheckboxSizes } from './../../../components/Filter/Filters';
 import { breedMapping, PetBreed, PetType, sort, Overrides } from './data/data';
-import NestedFilter from '~/components/Filter/NestedFilter';
-import StandaloneFilter from '~/components/Filter/StandaloneFilter';
+import NestedFilter from './../../../components/Filter/NestedFilter';
+import StandaloneFilter from './../../../components/Filter/StandaloneFilter';
 import styled from 'styled-components';
 
 const NestedFilterWrapped = styled(NestedFilter)`
@@ -61,6 +61,7 @@ interface TemplateProps {
 export default meta;
 
 const Template = (args: TemplateProps) => {
+    const ref = useRef<FilterRef>(null);
     // Destructure args to get the individual properties
     const { ...restArgs } = args;
 
@@ -77,10 +78,20 @@ const Template = (args: TemplateProps) => {
         replaceChildrenWithParentOnAllChecked: args.replaceChildrenWithParentOnAllChecked as boolean,
     };
 
+    const clearFilters = () => {
+        ref.current?.clearFilters();
+    };
+
     return (
         <Grid2 container>
             <Grid2 size={{ xs: 6 }}>
-                <Filters {...restArgs} checkboxSize={args.checkboxSize} onFilterChange={handleFilterChange} options={updatedOptions}>
+                <Filters
+                    ref={ref}
+                    {...restArgs}
+                    checkboxSize={args.checkboxSize}
+                    onFilterChange={handleFilterChange}
+                    options={updatedOptions}
+                >
                     <NestedFilterWrapped
                         filterKey="PetTypeBreed"
                         items={PetType}
@@ -94,6 +105,9 @@ const Template = (args: TemplateProps) => {
                 </Filters>
             </Grid2>
             <Grid2 size={{ xs: 6 }}>
+                <Button variant="contained" onClick={clearFilters}>
+                    Clear
+                </Button>
                 {Object.keys(filters).map((key) => (
                     <pre key={key}>
                         {key}:
