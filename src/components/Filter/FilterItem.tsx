@@ -89,7 +89,7 @@ function FilterItem({ id, indeterminate, itemId, isChecked, size, onChecked, tit
                         style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                     >
                         <Typography fontSize={CheckboxSize[size].fontSize} noWrap variant="caption">
-                            {title} - {`${indeterminate}`}
+                            {title}
                         </Typography>
                     </Title>
                 </Label>
