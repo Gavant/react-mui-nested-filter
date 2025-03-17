@@ -37,7 +37,7 @@ function ParentChildFilter<P extends ParentType, C extends ChildType>({
     options = { replaceChildrenWithParentOnAllChecked: true, combineChildrenAndParentItems: false },
 }: ParentChildFilterProps<P, C, keyof P, keyof C>) {
     const { checkboxSize, defaultBuckets } = useFilterContext();
-    const { combineChildrenAndParentItems, filterSortNameOverrides, childOptions, otherRename } = options;
+    const { filterSortNameOverrides, childOptions, otherRename } = options;
     const childSet = useRef<Set<string>>(new Set(childItems));
     const isIncludingOther =
         includeOther === true || (typeof includeOther === 'object' && includeOther !== null && includeOther[parentValue] === true);
@@ -45,27 +45,51 @@ function ParentChildFilter<P extends ParentType, C extends ChildType>({
 
     const bucketKey = (parentChild: 'parent' | 'child') => {
         if (filterSortNameOverrides) {
-            return combineChildrenAndParentItems
-                ? (filterSortNameOverrides?.default ?? defaultBuckets.default)
-                : (filterSortNameOverrides[parentChild] ?? defaultBuckets[parentChild]);
+            return filterSortNameOverrides[parentChild] ?? defaultBuckets[parentChild];
         } else {
-            return combineChildrenAndParentItems ? defaultBuckets.default : defaultBuckets[parentChild]!;
+            return defaultBuckets[parentChild]!;
         }
     };
 
-    const hasAnyItemsChecked = useMemo(() => {
-        return (childItems ?? []).some((item) => checkedItems[bucketKey('child')].has(item));
-    }, [childItems, checkedItems]);
+    const checkedItemsRef = useMemo(() => {
+        return new Map(Object.entries(checkedItems).map(([key, set]) => [key, new Set(set)]));
+    }, [Object.keys(checkedItems).join(','), ...Object.values(checkedItems).map((set) => Array.from(set).join(','))]);
 
-    const allChildrenChecked = () => childSet.current?.isSubsetOf(checkedItems[bucketKey('child')]);
+    const otherChecked = useMemo(() => checkedItemsRef.get('OTHER')?.has(parentValue) ?? false, [checkedItemsRef, parentValue]);
+
+    const indeterminateOther = useMemo(() => (isIncludingOther ? otherChecked : false), [isIncludingOther, otherChecked]);
+
+    const hasAnyItemsChecked = useMemo(
+        () => (childItems ?? []).some((item) => checkedItemsRef.get(bucketKey('child'))?.has(item)) || indeterminateOther,
+        [checkedItemsRef, childItems, indeterminateOther]
+    );
+
+    const allChildrenChecked = useMemo(
+        () =>
+            childSet.current?.isSubsetOf(checkedItemsRef.get(bucketKey('child')) ?? new Set()) ||
+            checkedItemsRef.get(bucketKey('parent'))?.has(parentValue) ||
+            false,
+        [checkedItemsRef, parentValue]
+    );
+
+    const indeterminateAllChildren = useMemo(
+        () => (isIncludingOther ? allChildrenChecked && indeterminateOther : allChildrenChecked),
+        [isIncludingOther, allChildrenChecked, indeterminateOther]
+    );
+
+    const indeterminateValue = useMemo(
+        () => (hasAnyItemsChecked && !indeterminateAllChildren) ?? false,
+        [hasAnyItemsChecked, indeterminateAllChildren]
+    );
+
     return (
         <FilterItem
             id={pid}
             itemId={pid}
             size={checkboxSize}
             className="parent-filter-item"
-            isChecked={checkedItems[bucketKey('parent')]?.has(parentValue) || allChildrenChecked()}
-            indeterminate={hasAnyItemsChecked && !allChildrenChecked()}
+            isChecked={checkedItems[bucketKey('parent')]?.has(parentValue) || allChildrenChecked}
+            indeterminate={indeterminateValue}
             onChecked={(isChecked: boolean) => onCheckedChange(parentKey, undefined, parentValue, isChecked)}
             title={overrides?.[parentValue as keyof P] ?? enumToReadable(parentValue as string)}
         >
@@ -88,7 +112,7 @@ function ParentChildFilter<P extends ParentType, C extends ChildType>({
                     key={`${pid}-OTHER`}
                     size={checkboxSize}
                     className="child-filter-item"
-                    isChecked={checkedItems['OTHER']?.has(parentValue) || checkedItems[bucketKey('parent')].has(parentValue)}
+                    isChecked={otherChecked}
                     onChecked={(isChecked: boolean) => onCheckedChange(parentKey, getOtherKey(), parentValue, isChecked)}
                     title={childOptions?.childOtherTitleOverride ?? otherRename ?? 'Other'}
                     itemId={formChildId(filterKey, pid, 'OTHER')}

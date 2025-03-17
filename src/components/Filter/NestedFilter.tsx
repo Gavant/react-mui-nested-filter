@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import ParentChildFilter from './ParentChildFilter';
 import { FilterOptions, NestedItemsType, OTHER_DEFAULT, useFilterContext } from './Filter.context';
-import { createDefaultBuckets } from './Filters';
+import { createDefaultBuckets } from '../../constants/constants';
 
 const formParentId = (filterKey: string, identifier: any) => `${filterKey}-parent-${identifier}`;
 const formChildId = (filterKey: string, parentId: any, childId: any) => `${filterKey}-${parentId}-child-${childId}`;
@@ -60,7 +60,7 @@ function NestedFilter<I extends ParentType, C extends ChildType, M extends Mappi
     const sortChild = useRef(sortFunction(childSort));
     const { checkedItems, onItemChecked, defaultBuckets, options } = useFilterContext();
     const thisFilterItems = checkedItems?.[filterKey] ?? createDefaultBuckets();
-    const { replaceChildrenWithParentOnAllChecked, combineChildrenAndParentItems, filterSortNameOverrides, otherRename } = options;
+    const { replaceChildrenWithParentOnAllChecked, filterSortNameOverrides, otherRename } = options;
     const getOtherKey = () => (otherRename ? otherRename : OTHER_DEFAULT);
 
     const useOther = (collection: NestedItemsType) => {
@@ -102,11 +102,9 @@ function NestedFilter<I extends ParentType, C extends ChildType, M extends Mappi
 
     const bucketKey = (parentChild: 'parent' | 'child') => {
         if (filterSortNameOverrides) {
-            return combineChildrenAndParentItems
-                ? (filterSortNameOverrides?.default ?? defaultBuckets.default)
-                : (filterSortNameOverrides[parentChild] ?? defaultBuckets[parentChild]);
+            return filterSortNameOverrides[parentChild] ?? defaultBuckets[parentChild];
         } else {
-            return combineChildrenAndParentItems ? defaultBuckets.default : defaultBuckets[parentChild]!;
+            return defaultBuckets[parentChild]!;
         }
     };
 

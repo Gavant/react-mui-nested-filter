@@ -99,6 +99,7 @@ const Template = (args: TemplateProps) => {
                         mapping={breedMapping}
                         labelOverrides={Overrides}
                         parentSort={sort}
+                        includeOther
                     />
                     <StandaloneFilterWrapped filterKey="PetTypeBreed" title="Other" value="OTHER" />
                     <StandaloneFilter filterKey="somethingElse" title="Something Else" value="2" />

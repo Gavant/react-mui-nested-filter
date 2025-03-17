@@ -1,9 +1,9 @@
 import FilterItem from './FilterItem';
 import { TreeItemProps } from '@mui/x-tree-view/TreeItem';
-import { createDefaultBuckets } from './Filters';
 import { CSSProperties } from 'styled-components';
 import { useFilterContext } from './Filter.context';
 import { useCallback } from 'react';
+import { createDefaultBuckets } from '../../constants/constants';
 
 const formId = (filterKey: string, identifier: any) => `${filterKey}-standalone-${identifier}`;
 

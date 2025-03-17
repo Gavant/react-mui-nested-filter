@@ -2,18 +2,12 @@ import { CheckboxProps } from '@mui/material';
 import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
 import { ReactNode, SyntheticEvent, useState, forwardRef, useImperativeHandle, Ref } from 'react';
 import { CheckedItemsType, FilterContext, FilterOptions } from './Filter.context';
+import { createDefaultBuckets, DEFAULT_BUCKETS } from '../../constants/constants';
 
 export type MuiCheckboxSizes = Pick<CheckboxProps, 'size'>['size'];
 
 export type CheckboxSizes = 'small' | 'medium' | 'large';
 export type FilterItems = CheckedItemsType;
-
-const DEFAULT_BUCKETS = { default: 'combined', parent: 'parent', child: 'child' };
-export const createDefaultBuckets = () => ({
-    [DEFAULT_BUCKETS.default]: new Set<string>(), //TODO: Ditch default bucket.
-    [DEFAULT_BUCKETS.parent]: new Set<string>(),
-    [DEFAULT_BUCKETS.child]: new Set<string>(),
-});
 
 export interface FilterProps {
     checkboxSize: MuiCheckboxSizes;

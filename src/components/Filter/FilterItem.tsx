@@ -2,7 +2,7 @@ import { CheckboxSizes, MuiCheckboxSizes } from './Filters';
 import { Checkbox, Typography } from '@mui/material';
 import styled, { CSSProperties } from 'styled-components';
 import { TreeItem, TreeItemProps } from '@mui/x-tree-view/TreeItem';
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 
 const Title = styled.span`
     overflow: hidden;
@@ -89,7 +89,7 @@ function FilterItem({ id, indeterminate, itemId, isChecked, size, onChecked, tit
                         style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                     >
                         <Typography fontSize={CheckboxSize[size].fontSize} noWrap variant="caption">
-                            {title}
+                            {title} - {`${indeterminate}`}
                         </Typography>
                     </Title>
                 </Label>

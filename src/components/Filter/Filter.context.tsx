@@ -8,7 +8,7 @@ export const OTHER_DEFAULT = 'OTHER';
 export type FilterOptions = {
     replaceChildrenWithParentOnAllChecked?: boolean;
     combineChildrenAndParentItems?: boolean; //TODO: ditch this
-    filterSortNameOverrides?: { default?: string; parent?: string; child?: string };
+    filterSortNameOverrides?: { parent?: string; child?: string };
     childOptions?: {
         childOtherTitleOverride?: string;
         childItemProps?: TreeItemProps; //TODO: Implement
@@ -26,7 +26,7 @@ export const FilterContext = createContext<{
     checkboxSize: CheckboxSizes;
     expandedItems: Set<string>;
     checkedItems: CheckedItemsType;
-    defaultBuckets: { default: string; parent: string; child: string };
+    defaultBuckets: { parent: string; child: string };
     onItemChecked: (key: string, update: NestedItemsType) => void;
     onItemExpansionToggle: (_event: SyntheticEvent, itemId: string, isExpanded: boolean) => void;
     options?: FilterOptions;
@@ -34,7 +34,7 @@ export const FilterContext = createContext<{
     checkboxSize: 'medium',
     expandedItems: new Set<string>(),
     checkedItems: { default: { default: new Set() } },
-    defaultBuckets: { default: 'combined', parent: 'parent', child: 'child' },
+    defaultBuckets: { parent: 'parent', child: 'child' },
     onItemChecked: () => {},
     onItemExpansionToggle: () => {},
     options: { combineChildrenAndParentItems: false },
@@ -45,7 +45,7 @@ export const useFilterContext = () => {
         checkboxSize: CheckboxSizes;
         expandedItems: Set<string>;
         checkedItems: CheckedItemsType;
-        defaultBuckets: { default: string; parent: string; child: string };
+        defaultBuckets: { parent: string; child: string };
         onItemChecked: (key: string, update: NestedItemsType) => void;
         onItemExpansionToggle: (_event: SyntheticEvent, itemId: string, isExpanded: boolean) => void;
         options: FilterOptions;
